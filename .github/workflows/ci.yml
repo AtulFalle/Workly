@@ -22,33 +22,43 @@ jobs:
           filter: tree:0
           fetch-depth: 0
 
+      # Cache node_modules
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      # Cache node_modules + npm cache
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # Deterministic install
+      # Install dependencies
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: |
+          npm install --prefer-offline --no-audit --no-fund --no-optional
         timeout-minutes: 8
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-        timeout-minutes: 5
+      # --- Future: Playwright setup (uncomment when needed) ---
+      # - name: Install Playwright
+      #   run: npx playwright install --with-deps
+      #   timeout-minutes: 5
 
-      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
+      # Start Nx Cloud after dependencies are installed
+      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="ci"
 
-      # Run distributed Nx tasks
-      - run: npx nx affected -t lint test build e2e --parallel
+      # Run lint, test, build with Nx Cloud recording
+      - run: npx nx-cloud record -- npx nx run-many -t lint test build
 
+      # --- Future: e2e target (uncomment when needed) ---
+      # - run: npx nx-cloud record -- npx nx run-many -t e2e
+
+      # Nx Cloud recommends fixes for failures to help you get CI green faster
       - run: npx nx-cloud record -- npx nx fix-ci
         if: always()
+
+      # --- Future: matrix build example ---
+      # strategy:
+      #   matrix:
+      #     node: [18, 20]
+      # runs-on: ubuntu-latest
+      # steps:
+      #   - uses: actions/setup-node@v4
+      #     with:
+      #       node-version: ${{ matrix.node }}
+      #       cache: 'npm'
