@@ -1,0 +1,10 @@
+{
+  "nx-console": {
+    "initialGitRef": {
+      "ref": "9db05fca8a4947390494fbf456590a6131846701",
+      "subject": "removed primeng"
+    },
+    "targetVersion": "latest",
+    "confirmedPackageUpdates": true
+  }
+}
