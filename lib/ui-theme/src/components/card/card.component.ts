@@ -17,12 +17,12 @@ import { cardBodyVariants, cardHeaderVariants, cardVariants } from './card.varia
     @if (zTitle()) {
       <div [class]="headerClasses()">
         <div class="text-2xl font-semibold leading-none tracking-tight">
-          <ng-container *zStringTemplateOutlet="zTitle()">{{ zTitle() }}</ng-container>
+          <ng-container *z-string-template-outlet="zTitle()">{{ zTitle() }}</ng-container>
         </div>
 
         @if (zDescription()) {
           <div class="text-sm text-muted-foreground">
-            <ng-container *zStringTemplateOutlet="zDescription()">{{ zDescription() }}</ng-container>
+            <ng-container *z-string-template-outlet="zDescription()">{{ zDescription() }}</ng-container>
           </div>
         }
       </div>

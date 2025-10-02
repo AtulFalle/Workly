@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ZardCardComponent, ZardButtonComponent, ZardInputDirective } from '@workly/ui-theme';
+
 @Component({
     selector: 'app-login',
     imports: [
@@ -17,14 +18,14 @@ import { ZardCardComponent, ZardButtonComponent, ZardInputDirective } from '@wor
     styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+    private fb = inject(FormBuilder);
+    private router = inject(Router);
+    
     loginForm: FormGroup;
     isLoading = signal(false);
     errorMessage = signal('');
 
-    constructor(
-        private fb: FormBuilder,
-        private router: Router
-    ) {
+    constructor() {
         this.loginForm = this.fb.group({
             username: ['', [Validators.required, Validators.minLength(3)]],
             password: ['', [Validators.required, Validators.minLength(6)]]
