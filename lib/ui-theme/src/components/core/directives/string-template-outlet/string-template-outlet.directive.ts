@@ -17,7 +17,7 @@ export class ZardStringTemplateOutletDirective implements OnChanges {
   @Input() zStringTemplateOutletContext: Record<string, unknown> | null = null;
   @Input() zStringTemplateOutlet: unknown | TemplateRef<unknown> = null;
 
-  static ngTemplateContextGuard<T>(_dir: ZardStringTemplateOutletDirective<T>, _ctx: unknown): _ctx is ZardStringTemplateOutletContext {
+  static ngTemplateContextGuard(_dir: ZardStringTemplateOutletDirective, _ctx: unknown): _ctx is ZardStringTemplateOutletContext {
     return true;
   }
 
@@ -33,9 +33,9 @@ export class ZardStringTemplateOutletDirective implements OnChanges {
   private updateContext(): void {
     const newCtx = isTemplateRef(this.zStringTemplateOutlet) ? this.zStringTemplateOutletContext : this.context;
     const oldCtx = this.embeddedViewRef?.context as Record<string, unknown>;
-    if (newCtx) {
+    if (newCtx && oldCtx) {
       for (const propName of Object.keys(newCtx)) {
-        oldCtx[propName] = newCtx[propName];
+        (oldCtx as Record<string, unknown>)[propName] = (newCtx as Record<string, unknown>)[propName];
       }
     }
   }
