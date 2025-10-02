@@ -18,24 +18,34 @@ jobs:
       NX_CLOUD_NPM_INSTALL_TIMEOUT: 600
 
     steps:
+      # Checkout repo
       - uses: actions/checkout@v4
         with:
           filter: tree:0
           fetch-depth: 0
 
-      # Setup Node and enable npm caching
+      # Setup Node and enable npm cache
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      # Install dependencies (fast + stable)
+      # Cache node_modules and npm store
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install dependencies (fast & deterministic)
       - name: Install dependencies
-        run: |
-          npm install --prefer-offline --no-audit --no-fund --no-optional
+        run: npm ci --prefer-offline --no-audit --no-fund
         timeout-minutes: 8
 
-      # Install Playwright (commented until needed)
+      # --- Future: Playwright setup (uncomment when needed) ---
       # - name: Install Playwright
       #   run: npx playwright install --with-deps
       #   timeout-minutes: 5
@@ -46,9 +56,9 @@ jobs:
       # Run Nx tasks in parallel on Nx Cloud
       - run: npx nx-cloud record -- npx nx run-many -t lint test build --parallel=3
 
-      # Run Nx Cloud fix (always runs, even if previous failed)
+      # --- Future: e2e target (uncomment when needed) ---
+      # - run: npx nx-cloud record -- npx nx run-many -t e2e
+
+      # Nx Cloud recommends fixes for failures to help you get CI green faster
       - run: npx nx-cloud record -- npx nx fix-ci
         if: always()
-
-      # Example for future: add e2e back
-      # - run: npx nx-cloud record -- npx nx run-many -t e2e
