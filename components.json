@@ -1,0 +1,13 @@
+{
+  "style": "scss",
+  "tailwind": {
+    "css": "lib/ui-theme/src/theme.scss",
+    "baseColor": "stone",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "lib/ui-theme/src/components",
+    "utils": "lib/ui-theme/src/lib/utils"
+  },
+  "theme": "stone"
+}

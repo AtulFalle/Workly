@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "authentication/Routes": [
+        "apps/frontend/authentication/src/app/remote-entry/entry.routes.ts"
+      ],
+      "@workly/ui-theme": [
+        "lib/ui-theme/src/index.ts"
+      ],
+      "@workly/ui-theme/*": [
+        "lib/ui-theme/src/*"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
