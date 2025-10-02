@@ -16,49 +16,39 @@ jobs:
     env:
       NX_CLOUD_NPM_LEGACY_INSTALL: false
       NX_CLOUD_NPM_INSTALL_TIMEOUT: 600
+
     steps:
       - uses: actions/checkout@v4
         with:
           filter: tree:0
           fetch-depth: 0
 
-      # Cache node_modules
+      # Setup Node and enable npm caching
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      # Install dependencies
+      # Install dependencies (fast + stable)
       - name: Install dependencies
         run: |
           npm install --prefer-offline --no-audit --no-fund --no-optional
         timeout-minutes: 8
 
-      # --- Future: Playwright setup (uncomment when needed) ---
+      # Install Playwright (commented until needed)
       # - name: Install Playwright
       #   run: npx playwright install --with-deps
       #   timeout-minutes: 5
 
-      # Start Nx Cloud after dependencies are installed
-      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="ci"
+      # Start Nx Cloud distributed agents
+      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
 
-      # Run lint, test, build with Nx Cloud recording
-      - run: npx nx-cloud record -- npx nx run-many -t lint test build
+      # Run Nx tasks in parallel on Nx Cloud
+      - run: npx nx-cloud record -- npx nx run-many -t lint test build --parallel=3
 
-      # --- Future: e2e target (uncomment when needed) ---
-      # - run: npx nx-cloud record -- npx nx run-many -t e2e
-
-      # Nx Cloud recommends fixes for failures to help you get CI green faster
+      # Run Nx Cloud fix (always runs, even if previous failed)
       - run: npx nx-cloud record -- npx nx fix-ci
         if: always()
 
-      # --- Future: matrix build example ---
-      # strategy:
-      #   matrix:
-      #     node: [18, 20]
-      # runs-on: ubuntu-latest
-      # steps:
-      #   - uses: actions/setup-node@v4
-      #     with:
-      #       node-version: ${{ matrix.node }}
-      #       cache: 'npm'
+      # Example for future: add e2e back
+      # - run: npx nx-cloud record -- npx nx run-many -t e2e
