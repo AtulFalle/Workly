@@ -12,7 +12,8 @@
     "build:portal": "nx build portal",
     "build:backend": "nx build backend-authetication",
     "test:frontend": "nx run-many --target=test --projects=authentication,portal --parallel",
-    "lint:frontend": "nx run-many --target=lint --projects=authentication,portal --parallel"
+    "lint:frontend": "nx run-many --target=lint --projects=authentication,portal --parallel",
+    "lint:backend": "nx run-many --target=lint --projects=backend-authentication --parallel"
   },
   "private": true,
   "dependencies": {

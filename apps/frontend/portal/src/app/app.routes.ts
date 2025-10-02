@@ -7,6 +7,6 @@ export const appRoutes: Route[] = [
     loadChildren: () =>
       loadRemote<typeof import('authentication/Routes')>(
         'authentication/Routes'
-      ).then((m) => m!.remoteRoutes),
+      ).then((m) => m?.remoteRoutes ?? []),
   },
 ];

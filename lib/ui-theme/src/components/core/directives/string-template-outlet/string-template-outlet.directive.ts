@@ -5,16 +5,16 @@ export function isTemplateRef<T>(value: TemplateRef<T> | unknown): value is Temp
 }
 
 @Directive({
-  selector: '[zStringTemplateOutlet]',
+  selector: '[z-string-template-outlet]',
   exportAs: 'zStringTemplateOutlet',
 })
-export class ZardStringTemplateOutletDirective<_T = unknown> implements OnChanges {
+export class ZardStringTemplateOutletDirective implements OnChanges {
   private viewContainer = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef<unknown>);
 
   private embeddedViewRef: EmbeddedViewRef<unknown> | null = null;
   private context = new ZardStringTemplateOutletContext();
-  @Input() zStringTemplateOutletContext: any | null = null;
+  @Input() zStringTemplateOutletContext: Record<string, unknown> | null = null;
   @Input() zStringTemplateOutlet: unknown | TemplateRef<unknown> = null;
 
   static ngTemplateContextGuard<T>(_dir: ZardStringTemplateOutletDirective<T>, _ctx: unknown): _ctx is ZardStringTemplateOutletContext {
@@ -32,7 +32,7 @@ export class ZardStringTemplateOutletDirective<_T = unknown> implements OnChange
 
   private updateContext(): void {
     const newCtx = isTemplateRef(this.zStringTemplateOutlet) ? this.zStringTemplateOutletContext : this.context;
-    const oldCtx = this.embeddedViewRef?.context as any;
+    const oldCtx = this.embeddedViewRef?.context as Record<string, unknown>;
     if (newCtx) {
       for (const propName of Object.keys(newCtx)) {
         oldCtx[propName] = newCtx[propName];
